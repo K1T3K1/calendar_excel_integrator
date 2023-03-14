@@ -83,7 +83,7 @@ def main():
             new_work_event = work_event(start, end)
             work_events.append(new_work_event)
 
-        filename = "working_time_aberg.xlsx"
+        filename = "working_time/working_time_aberg.xlsx"
         workbook = load_workbook(filename=filename)
         sheet = workbook.active
         column_offset = 1

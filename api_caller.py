@@ -38,7 +38,6 @@ class work_event:
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 
-
 def main():
     """Shows basic usage of the Google Calendar API.
     Prints the start and name of the next 10 events on the user's calendar.
@@ -92,14 +91,34 @@ def main():
         row_offset = 2
         year_offset_23 = -2
         year_offset_24 = 10
+        days = {}
+        new_day = []
+        latest_date = ()
         for event in work_events:
-            if(event.start_year == '2023'):
-                cell_to_modify = sheet.cell(row=((row_offset+int(event.start_month) + year_offset_23)), column=(column_offset+int(event.start_day)))
-            if(event.start_year == '2024'):
-                cell_to_modify = sheet.cell(row=((row_offset+int(event.start_month) + year_offset_24)), column=(column_offset+int(event.start_day)))
-            start_time = float(event.start_hour) + (float(event.start_minute) / 60) + (float(event.start_second)/3600)
-            end_time = float(event.end_hour) + (float(event.end_minute) / 60) + (float(event.end_second)/3600)
-            cell_to_modify.value = (end_time - start_time)
+            if(latest_date == ()):
+                latest_date = (event.start_year, event.start_month, event.start_day)
+            actual_date = (event.start_year, event.start_month, event.start_day)
+            if(latest_date == actual_date):
+                new_day.append(event)
+            if(latest_date != actual_date):
+                days[latest_date] = new_day
+                latest_date = actual_date
+                new_day = []
+                new_day.append(event)
+
+
+        for day in days:
+            if(day[0] == '2023'):
+                cell_to_modify = sheet.cell(row=((row_offset+int(day[1]) + year_offset_23)), column=(column_offset+int(day[2])))
+            if(day[0] == '2024'):
+                cell_to_modify = sheet.cell(row=((row_offset+int(day[1]) + year_offset_24)), column=(column_offset+int(day[2])))
+            time_sum = 0
+            for event in days[day]:
+                start_time = float(event.start_hour) + (float(event.start_minute) / 60) + (float(event.start_second)/3600)
+                end_time = float(event.end_hour) + (float(event.end_minute) / 60) + (float(event.end_second)/3600)
+                time_sum += (end_time - start_time)
+            
+            cell_to_modify.value = time_sum
 
         workbook.save(filename=filename)
 

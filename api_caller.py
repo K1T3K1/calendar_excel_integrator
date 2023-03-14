@@ -66,7 +66,7 @@ def main():
 
         # Call the Calendar API
         event_cout = 900
-        print('Getting the upcoming 90 events')
+        print('Getting the upcoming ' + str(event_cout) + ' events')
         events_result = service.events().list(calendarId='primary', timeMin='2023-03-01T01:00:00Z',
                                               maxResults=event_cout, singleEvents=True,
                                               orderBy='startTime', q='Praca').execute()
@@ -85,7 +85,6 @@ def main():
 
         filename = "working_time_aberg.xlsx"
         workbook = load_workbook(filename=filename)
-        print(workbook.sheetnames)
         sheet = workbook.active
         column_offset = 1
         row_offset = 2
